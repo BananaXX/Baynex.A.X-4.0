@@ -1,0 +1,626 @@
+# BAYNEX.A.X
+
+**Binary Autonomous Yield Navigation & Execution X-System**
+
+A fully autonomous, self-learning, AI-powered multi-platform trading system that can trade across multiple platforms including Deriv, MetaTrader 5, and IQ Option with advanced risk management and goal tracking.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/baynex-ax/baynex-ax)
+
+```
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                                                                               ║
+║    ██████╗  █████╗ ██╗   ██╗███╗   ██╗███████╗██╗  ██╗   █████╗   ██╗  ██╗    ║
+║    ██╔══██╗██╔══██╗╚██╗ ██╔╝████╗  ██║██╔════╝╚██╗██╔╝  ██╔══██╗  ╚██╗██╔╝    ║
+║    ██████╔╝███████║ ╚████╔╝ ██╔██╗ ██║█████╗   ╚███╔╝   ███████║   ╚███╔╝     ║
+║    ██╔══██╗██╔══██║  ╚██╔╝  ██║╚██╗██║██╔══╝   ██╔██╗   ██╔══██║   ██╔██╗     ║
+║    ██████╔╝██║  ██║   ██║   ██║ ╚████║███████╗██╔╝ ██╗██║  ██║██╗██╔╝ ██╗    ║
+║    ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝    ║
+║                                                                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+```
+
+## 🚀 Features
+
+### 💡 Core Capabilities
+
+- **Multi-Platform Trading**: Supports Deriv, MetaTrader 5, and IQ Option with plug-and-play architecture
+- **Self-Learning AI Engine**: Learns from every trade outcome and automatically refines strategies
+- **Autonomous Strategy Management**: Creates, adapts, and retires strategies without human intervention
+- **Advanced Risk Management**: Real-time risk assessment with emergency stop mechanisms
+- **Goal-Driven Trading**: Set and track profit targets, win rates, and custom objectives
+- **Voice Assistant (Baynexa)**: Interactive AI assistant with voice feedback and control
+- **Real-time Dashboard**: Modern web interface with live charts, metrics, and controls
+- **Multi-user Support**: Role-based access control for teams and organizations
+
+### 🧠 AI & Learning Features
+
+- **Pattern Recognition**: Identifies market patterns and trading opportunities
+- **Strategy Evolution**: Automatically creates hybrid strategies and optimizes performance
+- **Market Phase Detection**: Adapts to trending, ranging, and volatile market conditions
+- **Performance Analytics**: Detailed analysis of strategy and overall system performance
+- **Continuous Learning**: Builds knowledge base from successful and failed trades
+
+### 🛡️ Risk Management
+
+- **Real-time Monitoring**: Continuous assessment of portfolio risk and exposure
+- **Emergency Stop**: Automatic trading halt when risk thresholds are exceeded
+- **Dynamic Position Sizing**: Calculates optimal trade amounts based on account balance
+- **Drawdown Protection**: Prevents excessive losses through intelligent risk controls
+- **Platform Failover**: Automatically switches platforms if one becomes unavailable
+
+### 📊 Monitoring & Notifications
+
+- **Live Dashboard**: Real-time trading metrics, charts, and system status
+- **Telegram Integration**: Instant trade alerts and system notifications
+- **WhatsApp Support**: Critical alerts via WhatsApp messaging
+- **Voice Announcements**: Spoken updates on trades, profits, and system status
+- **Email Reports**: Daily/weekly performance summaries and reports
+
+## 📋 Prerequisites
+
+- **Node.js**: Version 16.0.0 or higher
+- **NPM**: Version 8.0.0 or higher
+- **Operating System**: Linux, macOS, or Windows
+- **Memory**: Minimum 2GB RAM (4GB recommended)
+- **Storage**: 1GB free disk space
+
+## 🛠️ Installation
+
+### Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/baynex-ax/baynex-ax.git
+cd baynex-ax
+
+# Install dependencies
+npm install
+
+# Setup configuration
+npm run setup
+
+# Start the system
+npm start
+```
+
+### Detailed Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/baynex-ax/baynex-ax.git
+   cd baynex-ax
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**
+   ```bash
+   # Copy environment template
+   cp .env.template .env
+   
+   # Edit configuration (see Configuration section)
+   nano .env
+   ```
+
+4. **Run Setup Script**
+   ```bash
+   npm run setup
+   ```
+
+5. **Start the System**
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Production mode
+   npm run prod
+   ```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Copy `.env.template` to `.env` and configure the following:
+
+#### Basic Configuration
+```bash
+NODE_ENV=development
+PORT=3000
+WS_PORT=8080
+JWT_SECRET=your-secure-secret-key
+```
+
+#### Trading Platforms
+
+**Deriv Configuration:**
+```bash
+DERIV_ENABLED=true
+DERIV_API_TOKEN=your-deriv-api-token
+DERIV_APP_ID=your-deriv-app-id
+DERIV_DEMO=true
+```
+
+**MetaTrader 5 Configuration:**
+```bash
+MT5_ENABLED=true
+MT5_SERVER=your-mt5-server
+MT5_LOGIN=your-mt5-login
+MT5_PASSWORD=your-mt5-password
+MT5_DEMO=true
+```
+
+**IQ Option Configuration:**
+```bash
+IQ_ENABLED=true
+IQ_EMAIL=your-iq-email@example.com
+IQ_PASSWORD=your-iq-password
+IQ_DEMO=true
+```
+
+#### Notifications
+
+**Telegram:**
+```bash
+TELEGRAM_ENABLED=true
+TELEGRAM_BOT_TOKEN=your-bot-token
+TELEGRAM_CHAT_ID=your-chat-id
+```
+
+**WhatsApp:**
+```bash
+WHATSAPP_ENABLED=true
+WHATSAPP_API_KEY=your-api-key
+WHATSAPP_PHONE=your-phone-number
+```
+
+### Firebase Setup
+
+1. Create a Firebase project at https://console.firebase.google.com
+2. Enable Authentication with Email/Password
+3. Add your Firebase configuration to `.env`:
+
+```bash
+FIREBASE_API_KEY=your-api-key
+FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+FIREBASE_PROJECT_ID=your-project-id
+```
+
+## 🖥️ Usage
+
+### Starting the System
+
+```bash
+# Start in development mode
+npm run dev
+
+# Start in production mode
+npm start
+
+# Start with PM2 (recommended for production)
+pm2 start server.js --name "baynex-ax"
+```
+
+### Accessing the Dashboard
+
+1. Open your browser and navigate to: `http://localhost:3000/dashboard`
+2. Login with your Firebase credentials
+3. The system will automatically initialize and begin learning
+
+### Voice Assistant Commands
+
+Interact with Baynexa using these voice commands:
+
+- **"Start trading"** - Begin autonomous trading
+- **"Pause trading"** - Temporarily halt trading
+- **"Stop trading"** - Stop all trading operations
+- **"Emergency stop"** - Immediate halt with safety measures
+- **"System status"** - Get current system information
+- **"Performance report"** - Hear trading performance summary
+
+### API Endpoints
+
+#### System Status
+```bash
+GET /api/status
+```
+
+#### Trading Control
+```bash
+POST /api/protected/system/emergency-stop
+POST /api/protected/system/restart
+```
+
+#### Performance Data
+```bash
+GET /api/protected/performance?timeframe=24h
+GET /api/protected/trades?limit=50
+```
+
+## 📊 Dashboard Features
+
+### Overview Section
+- Real-time balance and P&L
+- Win rate and trade statistics
+- Active strategies status
+- Quick action buttons
+
+### Trading Section
+- Platform connection status
+- Live trade execution
+- Recent trade history
+- Platform-specific metrics
+
+### Strategies Section
+- Active strategy performance
+- AI learning progress
+- Strategy switching controls
+- Performance analytics
+
+### Goals Section
+- Set profit targets
+- Track milestone progress
+- Achievement notifications
+- Custom goal creation
+
+### Risk Management
+- Real-time risk metrics
+- Emergency controls
+- Risk limit configuration
+- Alert settings
+
+## 🤖 AI Learning System
+
+### How It Works
+
+1. **Data Collection**: Every trade outcome is recorded and analyzed
+2. **Pattern Recognition**: AI identifies successful and unsuccessful patterns
+3. **Strategy Adaptation**: Strategies are modified based on performance data
+4. **Market Analysis**: Real-time market condition assessment
+5. **Decision Making**: AI makes autonomous trading decisions
+6. **Continuous Improvement**: System learns and improves over time
+
+### Strategy Types
+
+- **Momentum**: Trades in the direction of market momentum
+- **Reversal**: Identifies potential market reversals
+- **Breakout**: Trades on price breakouts from ranges
+- **Boundary Breaker**: Custom strategy for binary options
+- **Hybrid**: AI-created combinations of multiple strategies
+
+## 🛡️ Risk Management
+
+### Built-in Safety Features
+
+- **Maximum Daily Loss**: Automatically stops trading when daily loss limit is reached
+- **Position Sizing**: Calculates safe trade amounts based on account balance
+- **Drawdown Protection**: Prevents excessive account drawdown
+- **Emergency Stop**: Manual and automatic emergency halt mechanisms
+- **Platform Monitoring**: Continuous monitoring of platform connections
+
+### Risk Configuration
+
+```javascript
+// Risk settings in config
+{
+  "risk": {
+    "maxDailyLoss": 25.0,        // Maximum daily loss in USD
+    "maxDrawdown": 10.0,         // Maximum drawdown percentage
+    "stopLossPercentage": 2.0,   // Stop loss percentage
+    "takeProfitPercentage": 4.0, // Take profit percentage
+    "maxRiskPerTrade": 1.0,      // Maximum risk per trade (%)
+    "emergencyStopEnabled": true  // Enable emergency stop
+  }
+}
+```
+
+## 🎯 Goal Setting
+
+### Creating Goals
+
+```javascript
+// Example: Create a daily profit goal
+const goal = {
+  title: "Daily Profit Target",
+  type: "daily_profit",
+  targetValue: 50.0,
+  deadline: "2024-12-31T23:59:59.999Z",
+  priority: "high"
+};
+```
+
+### Goal Types
+
+- **Daily Profit**: Target daily profit amount
+- **Weekly Profit**: Target weekly profit amount
+- **Monthly Profit**: Target monthly profit amount
+- **Win Rate**: Target win rate percentage
+- **Trade Count**: Target number of trades
+- **Balance Target**: Target account balance
+- **Custom Goals**: User-defined objectives
+
+## 🚀 Deployment
+
+### Cloud Deployment (Render.com)
+
+1. **Fork this repository**
+2. **Connect to Render**:
+   - Sign up at https://render.com
+   - Connect your GitHub account
+   - Select this repository
+
+3. **Configure Environment**:
+   - Add all environment variables from your `.env` file
+   - Set `NODE_ENV=production`
+
+4. **Deploy**:
+   - Render will automatically deploy your application
+   - Access your app at the provided URL
+
+### Docker Deployment
+
+```dockerfile
+# Build image
+docker build -t baynex-ax .
+
+# Run container
+docker run -p 3000:3000 -p 8080:8080 \
+  --env-file .env \
+  --name baynex-ax \
+  baynex-ax
+```
+
+### PM2 Deployment
+
+```bash
+# Install PM2
+npm install -g pm2
+
+# Start with PM2
+pm2 start server.js --name "baynex-ax"
+
+# Save PM2 configuration
+pm2 save
+
+# Setup PM2 startup
+pm2 startup
+```
+
+## 📱 Mobile Access
+
+The dashboard is fully responsive and works on mobile devices:
+
+- **Responsive Design**: Optimized for phones and tablets
+- **Touch Controls**: Touch-friendly interface elements
+- **Mobile Notifications**: Push notifications support
+- **Offline Capability**: Basic functionality when offline
+
+## 🔧 Development
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/baynex-ax/baynex-ax.git
+cd baynex-ax
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Code Quality
+
+```bash
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+
+# Check for vulnerabilities
+npm audit
+```
+
+## 📝 API Documentation
+
+### Authentication
+
+All protected endpoints require authentication:
+
+```bash
+Authorization: Bearer <your-jwt-token>
+```
+
+### Endpoints
+
+#### System Endpoints
+
+```bash
+GET    /health                           # Health check
+GET    /api/status                       # System status
+POST   /api/protected/system/start       # Start trading
+POST   /api/protected/system/stop        # Stop trading
+POST   /api/protected/system/emergency   # Emergency stop
+```
+
+#### Trading Endpoints
+
+```bash
+GET    /api/protected/trades             # Get trade history
+GET    /api/protected/balance            # Get account balance
+GET    /api/protected/performance        # Get performance metrics
+POST   /api/protected/trades/execute     # Execute manual trade
+```
+
+#### Strategy Endpoints
+
+```bash
+GET    /api/protected/strategies         # Get strategies
+POST   /api/protected/strategies/toggle  # Enable/disable strategy
+GET    /api/protected/strategies/stats   # Strategy statistics
+```
+
+#### Goal Endpoints
+
+```bash
+GET    /api/protected/goals              # Get goals
+POST   /api/protected/goals              # Create goal
+PUT    /api/protected/goals/:id          # Update goal
+DELETE /api/protected/goals/:id          # Delete goal
+```
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+#### 1. "Cannot connect to platform"
+- Check your API credentials
+- Verify platform is online
+- Check internet connection
+- Review platform-specific logs
+
+#### 2. "Trading not starting"
+- Ensure `TRADING_ENABLED=true` in environment
+- Check account balance
+- Verify risk limits
+- Review system logs
+
+#### 3. "High memory usage"
+- Restart the system
+- Check for memory leaks in logs
+- Reduce AI learning data retention
+- Increase server memory
+
+#### 4. "Firebase authentication failed"
+- Verify Firebase configuration
+- Check API keys and project settings
+- Ensure authentication is enabled
+- Review Firebase console for errors
+
+### Log Analysis
+
+```bash
+# View real-time logs
+npm run logs
+
+# View specific log file
+tail -f logs/baynex-2024-01-01.log
+
+# Search logs for errors
+grep -i error logs/baynex-*.log
+```
+
+### Performance Optimization
+
+1. **Memory Management**:
+   - Regular system restarts
+   - Monitor memory usage
+   - Configure appropriate limits
+
+2. **Database Optimization**:
+   - Regular data cleanup
+   - Index optimization
+   - Backup old data
+
+3. **Network Optimization**:
+   - Use stable internet connection
+   - Configure connection timeouts
+   - Monitor API rate limits
+
+## 📞 Support
+
+### Getting Help
+
+- **Documentation**: https://docs.baynex-ax.com
+- **GitHub Issues**: https://github.com/baynex-ax/baynex-ax/issues
+- **Discord Community**: https://discord.gg/baynex-ax
+- **Email Support**: support@baynex-ax.com
+
+### Reporting Bugs
+
+When reporting bugs, please include:
+
+1. System information (OS, Node.js version)
+2. Configuration details (without sensitive data)
+3. Error messages and logs
+4. Steps to reproduce the issue
+5. Expected vs actual behavior
+
+### Feature Requests
+
+Submit feature requests via GitHub Issues with:
+
+1. Clear description of the feature
+2. Use case and benefits
+3. Proposed implementation (if applicable)
+4. Priority level
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Process
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
+
+### Code Standards
+
+- Follow ESLint configuration
+- Use Prettier for code formatting
+- Write comprehensive tests
+- Document new features
+- Follow semantic versioning
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **TensorFlow.js** - AI and machine learning capabilities
+- **Socket.IO** - Real-time communication
+- **Chart.js** - Dashboard visualizations
+- **Firebase** - Authentication and user management
+- **Express.js** - Web framework
+- **WebSocket** - Real-time data streaming
+
+## 🔗 Links
+
+- **Website**: https://baynex-ax.com
+- **Documentation**: https://docs.baynex-ax.com
+- **GitHub**: https://github.com/baynex-ax/baynex-ax
+- **Discord**: https://discord.gg/baynex-ax
+- **Twitter**: https://twitter.com/baynex_ax
+
+---
+
+**Disclaimer**: Trading involves risk and may not be suitable for all investors. BAYNEX.A.X is a trading system and does not provide financial advice. Past performance does not guarantee future results. Use at your own risk.
+
+---
+
+Made with ❤️ by the BAYNEX.A.X Team
