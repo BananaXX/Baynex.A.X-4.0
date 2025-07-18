@@ -2,7 +2,7 @@
   "name": "baynex-ax",
   "version": "1.0.0",
   "description": "BAYNEX.A.X Trading System",
-  "main": "BayneXSystem.js",
+  "start": "node server.js",
   "scripts": {
     "start": "node BayneXSystem.js",
     "dev": "node BayneXSystem.js"
