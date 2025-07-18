@@ -1,0 +1,93 @@
+{
+  "name": "BAYNEX.A.X",
+  "description": "Binary Autonomous Yield Navigation & Execution X-System - AI-Powered Autonomous Trading System",
+  "repository": "https://github.com/yourusername/baynex-ax",
+  "logo": "https://raw.githubusercontent.com/yourusername/baynex-ax/main/assets/logo.png",
+  "keywords": [
+    "trading",
+    "ai",
+    "autonomous",
+    "fintech",
+    "automation",
+    "forex",
+    "binary-options",
+    "machine-learning"
+  ],
+  "success_url": "/dashboard",
+  "env": {
+    "NODE_ENV": {
+      "description": "Node environment",
+      "value": "production"
+    },
+    "DERIV_APP_ID": {
+      "description": "Deriv API Application ID",
+      "required": true
+    },
+    "DERIV_API_TOKEN": {
+      "description": "Deriv API Token for trading",
+      "required": true
+    },
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram Bot Token for notifications",
+      "required": true
+    },
+    "TELEGRAM_CHAT_ID": {
+      "description": "Telegram Chat ID for receiving notifications",
+      "required": true
+    },
+    "FIREBASE_PROJECT_ID": {
+      "description": "Firebase Project ID for authentication",
+      "required": true
+    },
+    "FIREBASE_API_KEY": {
+      "description": "Firebase API Key",
+      "required": true
+    },
+    "JWT_SECRET": {
+      "description": "JWT Secret for authentication",
+      "generator": "secret"
+    },
+    "ENCRYPTION_KEY": {
+      "description": "Encryption key for sensitive data",
+      "generator": "secret"
+    },
+    "PAPER_TRADING_MODE": {
+      "description": "Enable paper trading mode for testing",
+      "value": "true"
+    },
+    "DEFAULT_RISK_PER_TRADE": {
+      "description": "Default risk percentage per trade",
+      "value": "0.02"
+    },
+    "MAX_DAILY_LOSS": {
+      "description": "Maximum daily loss limit in USD",
+      "value": "500"
+    },
+    "DAILY_PROFIT_TARGET": {
+      "description": "Daily profit target in USD",
+      "value": "200"
+    },
+    "VOICE_ENABLED": {
+      "description": "Enable voice assistant features",
+      "value": "true"
+    },
+    "AI_LEARNING_ENABLED": {
+      "description": "Enable AI learning and adaptation",
+      "value": "true"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "image": "heroku/nodejs",
+  "addons": [],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "stack": "heroku-22"
+}
