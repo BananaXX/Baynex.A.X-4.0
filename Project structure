@@ -1,0 +1,132 @@
+# BAYNEX.A.X - Complete Project Structure
+
+## 📁 Repository Structure
+
+```
+baynex-ax/
+├── README.md
+├── package.json
+├── .env.template
+├── .gitignore
+├── server.js                    # Main entry point for deployment
+├── BayneXSystem.js             # Main system orchestrator
+├── app.json                    # Render deployment config
+├── Procfile                    # Process file for deployment
+├── 
+├── src/
+│   ├── core/
+│   │   ├── BayneXCore.js
+│   │   └── index.js
+│   ├── integration/
+│   │   ├── BayneXIntegrationLayer.js
+│   │   └── index.js
+│   ├── ai/
+│   │   ├── AILearningEngine.js
+│   │   ├── StrategyManager.js
+# BAYNEX.A.X - Complete Project Structure
+
+## 📁 Repository Structure
+
+```
+baynex-ax/
+├── README.md
+├── package.json
+├── .env.template
+├── .gitignore
+├── server.js                    # Main entry point for deployment
+├── BayneXSystem.js             # Main system orchestrator
+├── app.json                    # Render deployment config
+├── Procfile                    # Process file for deployment
+├── 
+├── src/
+│   ├── core/
+│   │   ├── BayneXCore.js
+│   │   └── index.js
+│   ├── integration/
+│   │   ├── BayneXIntegrationLayer.js
+│   │   └── index.js
+│   ├── ai/
+│   │   ├── AILearningEngine.js
+│   │   ├── StrategyManager.js
+│   │   └── index.js
+│   ├── platforms/
+│   │   ├── PlatformConnectors.js
+│   │   ├── DerivConnector.js
+│   │   ├── MT5Connector.js
+│   │   ├── IQConnector.js
+│   │   └── index.js
+│   ├── strategies/
+│   │   ├── TradingStrategies.js
+│   │   ├── BoundaryBreaker.js
+│   │   ├── MomentumStrategy.js
+│   │   └── index.js
+│   ├── risk/
+│   │   ├── RiskManager.js
+│   │   └── index.js
+│   ├── data/
+│   │   ├── DataProcessor.js
+│   │   ├── DatabaseManager.js
+│   │   └── index.js
+│   ├── notifications/
+│   │   ├── NotificationSystem.js
+│   │   ├── TelegramBot.js
+│   │   ├── WhatsAppBot.js
+│   │   └── index.js
+│   ├── voice/
+│   │   ├── VoiceAssistant.js
+│   │   └── index.js
+│   ├── web/
+│   │   ├── WebSocketServer.js
+│   │   ├── dashboard/
+│   │   │   ├── index.html
+│   │   │   ├── css/
+│   │   │   │   └── styles.css
+│   │   │   ├── js/
+│   │   │   │   ├── dashboard.js
+│   │   │   │   └── firebase-config.js
+│   │   │   └── assets/
+│   │   └── index.js
+│   ├── goals/
+│   │   ├── GoalTracker.js
+│   │   └── index.js
+│   ├── config/
+│   │   ├── ConfigManager.js
+│   │   └── index.js
+│   └── utils/
+│       ├── Logger.js
+│       ├── Helpers.js
+│       └── index.js
+├── 
+├── scripts/
+│   ├── setup.js
+│   ├── test-connections.js
+│   ├── deploy.js
+│   ├── backup.js
+│   └── migration.js
+├── 
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── setup.js
+├── 
+├── docs/
+│   ├── API.md
+│   ├── DEPLOYMENT.md
+│   └── CONFIGURATION.md
+├── 
+├── logs/
+│   └── .gitkeep
+├── data/
+│   └── .gitkeep
+├── backups/
+│   └── .gitkeep
+└── ssl/
+    └── .gitkeep
+```
+
+This structure is:
+✅ GitHub ready
+✅ Render deployment ready  
+✅ Production optimized
+✅ Scalable architecture
+✅ Clean separation of concerns￼Enter
