@@ -1,0 +1,1102 @@
+// ================================
+// BAYNEX.A.X MAIN SYSTEM - FULLY INTEGRATED
+// Binary Autonomous Yield Navigation & Execution X-System
+// ================================
+
+const path = require('path');
+const BayneXIntegrationLayer = require('./src/integration/BayneXIntegrationLayer');
+
+// Core Components
+const BayneXCore = require('./src/core/BayneXCore');
+const AILearningEngine = require('./src/ai/AILearningEngine');
+const StrategyManager = require('./src/ai/StrategyManager');
+
+// Platform & Data Components
+const PlatformConnectors = require('./src/platforms/PlatformConnectors');
+const DataProcessor = require('./src/data/DataProcessor');
+const DatabaseManager = require('./src/data/DatabaseManager');
+
+// Risk & Trading Components
+const RiskManager = require('./src/risk/RiskManager');
+const TradingStrategies = require('./src/strategies/TradingStrategies');
+
+// Interface Components
+const NotificationSystem = require('./src/notifications/NotificationSystem');
+const VoiceAssistant = require('./src/voice/VoiceAssistant');
+const WebSocketServer = require('./src/web/WebSocketServer');
+const GoalTracker = require('./src/goals/GoalTracker');
+const ConfigManager = require('./src/config/ConfigManager');
+
+class BayneXSystem {
+    constructor() {
+        this.version = '1.0.0';
+        this.isRunning = false;
+        this.startTime = null;
+        
+        // Initialize integration layer
+        this.integration = new BayneXIntegrationLayer();
+        
+        // System statistics
+        this.systemStats = {
+            totalTrades: 0,
+            totalProfit: 0,
+            currentBalance: parseFloat(process.env.STARTING_BALANCE) || 1000,
+            dailyProfit: 0,
+            winRate: 0,
+            activeStrategies: 0,
+            systemUptime: 0,
+            lastUpdate: new Date()
+        };
+
+        // Initialize all components
+        this.initializeComponents();
+        
+        // Setup system event handlers
+        this.setupSystemEvents();
+    }
+
+    // ================================
+    // COMPONENT INITIALIZATION
+    // ================================
+    initializeComponents() {
+        console.log('🔧 Initializing BAYNEX.A.X Components...');
+
+        // Core system components
+        this.configManager = new ConfigManager();
+        this.database = new DatabaseManager();
+        
+        // Trading core
+        this.core = new BayneXCore();
+        this.platforms = new PlatformConnectors();
+        this.dataProcessor = new DataProcessor();
+        this.riskManager = new RiskManager();
+        this.strategies = new TradingStrategies();
+        
+        // AI and learning
+        this.aiEngine = new AILearningEngine();
+        this.strategyManager = new StrategyManager();
+        
+        // Interface systems
+        this.notifications = new NotificationSystem();
+        this.voice = new VoiceAssistant();
+        this.webSocket = new WebSocketServer();
+        this.goalTracker = new GoalTracker();
+
+        // Register all components with integration layer
+        this.registerAllComponents();
+    }
+
+    registerAllComponents() {
+        console.log('📋 Registering components with Integration Layer...');
+
+        // Register with dependencies
+        this.integration
+            .registerComponent('configManager', this.configManager)
+            .registerComponent('database', this.database)
+            .registerComponent('dataProcessor', this.dataProcessor)
+            .registerComponent('platforms', this.platforms)
+            .registerComponent('riskManager', this.riskManager)
+            .registerComponent('strategies', this.strategies)
+            .registerComponent('core', this.core)
+            .registerComponent('aiEngine', this.aiEngine)
+            .registerComponent('strategyManager', this.strategyManager)
+            .registerComponent('notifications', this.notifications)
+            .registerComponent('voice', this.voice)
+            .registerComponent('webSocket', this.webSocket)
+            .registerComponent('goalTracker', this.goalTracker);
+
+        console.log('✅ All components registered');
+    }
+
+    setupSystemEvents() {
+        console.log('🎯 Setting up system event handlers...');
+
+        // System lifecycle events
+        this.integration.on('system:ready', this.onSystemReady.bind(this));
+        this.integration.on('system:error', this.onSystemError.bind(this));
+        this.integration.on('system:started', this.onSystemStarted.bind(this));
+        this.integration.on('system:stopped', this.onSystemStopped.bind(this));
+
+        // Trading events
+        this.integration.on('component:trade_executed', this.onTradeExecuted.bind(this));
+        this.integration.on('component:trade_closed', this.onTradeClosed.bind(this));
+        this.integration.on('component:target_reached', this.onTargetReached.bind(this));
+        this.integration.on('component:emergency_stop', this.onEmergencyStop.bind(this));
+
+        console.log('✅ System event handlers configured');
+    }
+
+    // ================================
+    // SYSTEM LIFECYCLE
+    // ================================
+    async initialize() {
+        console.log('🚀 BAYNEX.A.X System Initialization Starting...');
+        console.log(`Version: ${this.version}`);
+        console.log(`Start Time: ${new Date().toISOString()}`);
+
+        try {
+            // Load configuration
+            await this.loadConfiguration();
+            
+            // Initialize integration layer
+            await this.integration.initializeSystem();
+            
+            // Set up monitoring
+            this.startSystemMonitoring();
+            
+            console.log('✅ BAYNEX.A.X System Initialized Successfully!');
+            
+            return true;
+            
+        } catch (error) {
+            console.error('❌ System initialization failed:', error);
+            await this.handleSystemError(error);
+            throw error;
+        }
+    }
+
+    async loadConfiguration() {
+        console.log('⚙️ Loading system configuration...');
+        
+        const config = await this.configManager.loadConfig();
+        
+        // Configure components with loaded settings
+        await this.applyConfiguration(config);
+        
+        console.log('✅ Configuration loaded and applied');
+    }
+
+    async applyConfiguration(config) {
+        // Apply config to each component
+        const components = [
+            this.core, this.aiEngine, this.riskManager,
+            this.platforms, this.notifications, this.voice
+        ];
+
+        for (const component of components) {
+            if (typeof component.updateConfig === 'function') {
+                await component.updateConfig(config);
+            }
+        }
+    }
+
+    async start() {
+        if (this.isRunning) {
+            console.log('⚠️ System is already running');
+            return;
+        }
+
+        console.log('▶️ Starting BAYNEX.A.X Autonomous Trading System...');
+        
+        try {
+            this.startTime = Date.now();
+            
+            // Start the integration layer (which starts all components)
+            await this.integration.start();
+            
+            // Start system monitoring
+            this.startSystemMonitoring();
+            
+            this.isRunning = true;
+            
+            // Send startup notifications
+            await this.sendStartupNotifications();
+            
+            console.log('🎯 BAYNEX.A.X is now AUTONOMOUS and ACTIVE!');
+            console.log('💰 Ready to generate profits 24/7!');
+            
+        } catch (error) {
+            console.error('❌ Failed to start system:', error);
+            await this.handleSystemError(error);
+        }
+    }
+
+    async stop() {
+        if (!this.isRunning) {
+            console.log('⚠️ System is not running');
+            return;
+        }
+
+        console.log('⏹️ Stopping BAYNEX.A.X System...');
+        
+        try {
+            // Stop integration layer (which stops all components)
+            await this.integration.stop();
+            
+            this.isRunning = false;
+            this.startTime = null;
+            
+            // Send shutdown notifications
+            await this.sendShutdownNotifications();
+            
+            console.log('✅ BAYNEX.A.X System stopped successfully');
+            
+        } catch (error) {
+            console.error('❌ Error stopping system:', error);
+        }
+    }
+
+    async restart() {
+        console.log('🔄 Restarting BAYNEX.A.X System...');
+        await this.stop();
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second pause
+        await this.start();
+    }
+
+    // ================================
+    // EVENT HANDLERS
+    // ================================
+    async onSystemReady() {
+        console.log('✅ BAYNEX.A.X Integration Layer Ready!');
+        
+        // Announce system readiness
+        if (this.voice && this.voice.isInitialized) {
+            await this.voice.speak('Baynex AI system is ready for autonomous trading');
+        }
+    }
+
+    async onSystemError(error) {
+        console.error('🚨 System Error:', error);
+        
+        // Send critical alert
+        if (this.notifications) {
+            await this.notifications.sendCriticalAlert({
+                type: 'system_error',
+                message: error.message,
+                timestamp: new Date()
+            });
+        }
+        
+        // Voice alert
+        if (this.voice) {
+            await this.voice.speak('Critical system error detected. Check notifications for details.');
+        }
+    }
+
+    async onSystemStarted() {
+        console.log('🚀 All components started successfully!');
+        
+        // Update system stats
+        this.updateSystemStats();
+        
+        // Start autonomous trading
+        await this.startAutonomousTrading();
+    }
+
+    async onSystemStopped() {
+        console.log('⏹️ All components stopped successfully!');
+    }
+
+    async onTradeExecuted(event) {
+        const trade = event.data[0];
+        console.log(`💰 Trade executed: ${trade.direction} ${trade.asset} - $${trade.amount}`);
+        
+        // Update system statistics
+        this.systemStats.totalTrades++;
+        this.updateSystemStats();
+        
+        // Announce significant trades
+        if (this.voice && trade.amount > 100) {
+            await this.voice.speak(`Large trade executed: ${trade.amount} dollars on ${trade.asset}`);
+        }
+    }
+
+    async onTradeClosed(event) {
+        const trade = event.data[0];
+        console.log(`📊 Trade closed: ${trade.result} - P&L: $${trade.profit}`);
+        
+        // Update system statistics
+        this.systemStats.totalProfit += trade.profit;
+        this.systemStats.dailyProfit += trade.profit;
+        this.systemStats.currentBalance += trade.profit;
+        this.updateSystemStats();
+        
+        // Calculate win rate
+        const completedTrades = await this.database.getCompletedTradesCount();
+        const winningTrades = await this.database.getWinningTradesCount();
+        this.systemStats.winRate = completedTrades > 0 ? (winningTrades / completedTrades * 100) : 0;
+        
+        // Announce significant results
+        if (this.voice && Math.abs(trade.profit) > 50) {
+            const message = trade.profit > 0 
+                ? `Excellent! Won ${trade.profit.toFixed(2)} dollars`
+                : `Loss taken: ${Math.abs(trade.profit).toFixed(2)} dollars`;
+            await this.voice.speak(message);
+        }
+    }
+
+    async onTargetReached(event) {
+        const achievement = event.data[0];
+        console.log(`🎯 Target reached: ${achievement.description}`);
+        
+        // Celebrate achievement
+        if (this.voice) {
+            await this.voice.speak(`Congratulations! ${achievement.description} achieved!`);
+        }
+        
+        // Send celebration notification
+        if (this.notifications) {
+            await this.notifications.sendAchievementAlert(achievement);
+        }
+    }
+
+    async onEmergencyStop(event) {
+        const stopEvent = event.data[0];
+        console.log('🛑 EMERGENCY STOP ACTIVATED:', stopEvent.reason);
+        
+        // Force stop all trading
+        this.isRunning = false;
+        
+        // Critical voice announcement
+        if (this.voice) {
+            await this.voice.speak('Emergency stop activated. All trading has been halted immediately.');
+        }
+        
+        // Send critical alerts
+        if (this.notifications) {
+            await this.notifications.sendCriticalAlert({
+                type: 'emergency_stop',
+                reason: stopEvent.reason,
+                timestamp: new Date()
+            });
+        }
+    }
+
+    // ================================
+    // AUTONOMOUS TRADING
+    // ================================
+    async startAutonomousTrading() {
+        console.log('🤖 Starting Autonomous Trading Mode...');
+        
+        // Enable AI learning
+        if (this.aiEngine) {
+            await this.aiEngine.enableLearning();
+        }
+        
+        // Start strategy execution
+        if (this.strategyManager) {
+            await this.strategyManager.startExecution();
+        }
+        
+        // Begin market monitoring
+        if (this.dataProcessor) {
+            await this.dataProcessor.startMonitoring();
+        }
+        
+        // Voice announcement
+        if (this.voice) {
+            await this.voice.speak('Autonomous trading mode activated. Baynexa is now hunting for profits.');
+        }
+        
+        console.log('✅ Autonomous trading is now ACTIVE!');
+    }
+
+    // ================================
+    // SYSTEM MONITORING
+    // ================================
+    startSystemMonitoring() {
+        console.log('📊 Starting system monitoring...');
+        
+        // Update system stats every 10 seconds
+        setInterval(() => {
+            this.updateSystemStats();
+        }, 10000);
+        
+        // Performance report every 5 minutes
+        setInterval(async () => {
+            await this.generatePerformanceReport();
+        }, 300000);
+        
+        // Daily summary at midnight
+        setInterval(async () => {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                await this.generateDailySummary();
+            }
+        }, 60000); // Check every minute for midnight
+    }
+
+    updateSystemStats() {
+        if (this.startTime) {
+            this.systemStats.systemUptime = Date.now() - this.startTime;
+        }
+        
+        this.systemStats.lastUpdate = new Date();
+        this.systemStats.activeStrategies = this.strategyManager ? 
+            this.strategyManager.getActiveStrategiesCount() : 0;
+        
+        // Broadcast updated stats to dashboard
+        if (this.webSocket) {
+            this.webSocket.broadcast('system_stats', this.systemStats);
+        }
+    }
+
+    async generatePerformanceReport() {
+        if (!this.isRunning) return;
+        
+        const report = {
+            timestamp: new Date(),
+            uptime: this.systemStats.systemUptime,
+            totalTrades: this.systemStats.totalTrades,
+            totalProfit: this.systemStats.totalProfit,
+            dailyProfit: this.systemStats.dailyProfit,
+            winRate: this.systemStats.winRate,
+            activeStrategies: this.systemStats.activeStrategies,
+            systemHealth: this.integration.getSystemHealth()
+        };
+        
+        console.log('📊 Performance Report:', report);
+        
+        // Send to dashboard
+        if (this.webSocket) {
+            this.webSocket.broadcast('performance_report', report);
+        }
+        
+        // Voice summary for significant performance
+        if (this.voice && this.systemStats.dailyProfit > 100) {
+            await this.voice.speak(`Daily profit update: ${this.systemStats.dailyProfit.toFixed(2)} dollars earned today`);
+        }
+    }
+
+    async generateDailySummary() {
+        console.log('📅 Generating daily summary...');
+        
+        const summary = {
+            date: new Date().toDateString(),
+            dailyProfit: this.systemStats.dailyProfit,
+            tradesExecuted: await this.database.getDailyTradeCount(),
+            winRate: this.systemStats.winRate,
+            bestStrategy: await this.strategyManager.getBestPerformingStrategy(),
+            systemUptime: this.systemStats.systemUptime / (1000 * 60 * 60), // Convert to hours
+        };
+        
+        // Reset daily stats
+        this.systemStats.dailyProfit = 0;
+        
+        // Send daily summary
+        if (this.notifications) {
+            await this.notifications.sendDailySummary(summary);
+        }
+        
+        // Voice summary
+        if (this.voice) {
+            const message = summary.dailyProfit > 0 
+                ? `Daily summary: Profitable day with ${summary.dailyProfit.toFixed(2)} dollars earned`
+                : `Daily summary: Loss day with ${Math.abs(summary.dailyProfit).toFixed(2)} dollars lost`;
+            await this.voice.speak(message);
+        }
+    }
+
+    // ================================
+    // NOTIFICATIONS
+    // ================================
+    async sendStartupNotifications() {
+        const message = `🚀 BAYNEX.A.X SYSTEM ACTIVATED
+
+🤖 Autonomous Trading: ENABLED
+💰 Starting Balance: $${this.systemStats.currentBalance}
+🎯 Daily Target: $${process.env.DAILY_PROFIT_TARGET || 200}
+🛡️ Max Daily Loss: $${process.env.MAX_DAILY_LOSS || 500}
+🧠 AI Learning: ACTIVE
+
+Ready to generate profits autonomously!`;
+
+        if (this.notifications) {
+            await this.notifications.sendSystemAlert({
+                type: 'startup',
+                message: message
+            });
+        }
+
+// ================================
+// BAYNEX.A.X MAIN SYSTEM - FULLY INTEGRATED
+// Binary Autonomous Yield Navigation & Execution X-System
+// ================================
+
+const path = require('path');
+const BayneXIntegrationLayer = require('./src/integration/BayneXIntegrationLayer');
+
+// Core Components
+const BayneXCore = require('./src/core/BayneXCore');
+const AILearningEngine = require('./src/ai/AILearningEngine');
+const StrategyManager = require('./src/ai/StrategyManager');
+
+// Platform & Data Components
+const PlatformConnectors = require('./src/platforms/PlatformConnectors');
+const DataProcessor = require('./src/data/DataProcessor');
+const DatabaseManager = require('./src/data/DatabaseManager');
+
+// Risk & Trading Components
+const RiskManager = require('./src/risk/RiskManager');
+const TradingStrategies = require('./src/strategies/TradingStrategies');
+
+// Interface Components
+const NotificationSystem = require('./src/notifications/NotificationSystem');
+const VoiceAssistant = require('./src/voice/VoiceAssistant');
+const WebSocketServer = require('./src/web/WebSocketServer');
+const GoalTracker = require('./src/goals/GoalTracker');
+const ConfigManager = require('./src/config/ConfigManager');
+
+class BayneXSystem {
+    constructor() {
+        this.version = '1.0.0';
+        this.isRunning = false;
+        this.startTime = null;
+        
+        // Initialize integration layer
+        this.integration = new BayneXIntegrationLayer();
+        
+        // System statistics
+        this.systemStats = {
+            totalTrades: 0,
+            totalProfit: 0,
+            currentBalance: parseFloat(process.env.STARTING_BALANCE) || 1000,
+            dailyProfit: 0,
+            winRate: 0,
+            activeStrategies: 0,
+            systemUptime: 0,
+            lastUpdate: new Date()
+        };
+
+        // Initialize all components
+        this.initializeComponents();
+        
+        // Setup system event handlers
+        this.setupSystemEvents();
+    }
+
+    // ================================
+    // COMPONENT INITIALIZATION
+    // ================================
+    initializeComponents() {
+        console.log('🔧 Initializing BAYNEX.A.X Components...');
+
+        // Core system components
+        this.configManager = new ConfigManager();
+        this.database = new DatabaseManager();
+        
+        // Trading core
+        this.core = new BayneXCore();
+        this.platforms = new PlatformConnectors();
+        this.dataProcessor = new DataProcessor();
+        this.riskManager = new RiskManager();
+        this.strategies = new TradingStrategies();
+        
+        // AI and learning
+        this.aiEngine = new AILearningEngine();
+        this.strategyManager = new StrategyManager();
+        
+        // Interface systems
+        this.notifications = new NotificationSystem();
+        this.voice = new VoiceAssistant();
+        this.webSocket = new WebSocketServer();
+        this.goalTracker = new GoalTracker();
+
+        // Register all components with integration layer
+        this.registerAllComponents();
+    }
+
+    registerAllComponents() {
+        console.log('📋 Registering components with Integration Layer...');
+
+        // Register with dependencies
+        this.integration
+            .registerComponent('configManager', this.configManager)
+            .registerComponent('database', this.database)
+            .registerComponent('dataProcessor', this.dataProcessor)
+            .registerComponent('platforms', this.platforms)
+            .registerComponent('riskManager', this.riskManager)
+            .registerComponent('strategies', this.strategies)
+            .registerComponent('core', this.core)
+            .registerComponent('aiEngine', this.aiEngine)
+            .registerComponent('strategyManager', this.strategyManager)
+            .registerComponent('notifications', this.notifications)
+            .registerComponent('voice', this.voice)
+            .registerComponent('webSocket', this.webSocket)
+            .registerComponent('goalTracker', this.goalTracker);
+
+        console.log('✅ All components registered');
+    }
+
+    setupSystemEvents() {
+        console.log('🎯 Setting up system event handlers...');
+
+        // System lifecycle events
+        this.integration.on('system:ready', this.onSystemReady.bind(this));
+        this.integration.on('system:error', this.onSystemError.bind(this));
+        this.integration.on('system:started', this.onSystemStarted.bind(this));
+        this.integration.on('system:stopped', this.onSystemStopped.bind(this));
+
+        // Trading events
+        this.integration.on('component:trade_executed', this.onTradeExecuted.bind(this));
+        this.integration.on('component:trade_closed', this.onTradeClosed.bind(this));
+        this.integration.on('component:target_reached', this.onTargetReached.bind(this));
+        this.integration.on('component:emergency_stop', this.onEmergencyStop.bind(this));
+
+        console.log('✅ System event handlers configured');
+    }
+
+    // ================================
+    // SYSTEM LIFECYCLE
+    // ================================
+    async initialize() {
+        console.log('🚀 BAYNEX.A.X System Initialization Starting...');
+        console.log(`Version: ${this.version}`);
+        console.log(`Start Time: ${new Date().toISOString()}`);
+
+        try {
+            // Load configuration
+            await this.loadConfiguration();
+            
+            // Initialize integration layer
+            await this.integration.initializeSystem();
+            
+            // Set up monitoring
+            this.startSystemMonitoring();
+            
+            console.log('✅ BAYNEX.A.X System Initialized Successfully!');
+            
+            return true;
+            
+        } catch (error) {
+            console.error('❌ System initialization failed:', error);
+            await this.handleSystemError(error);
+            throw error;
+        }
+    }
+
+    async loadConfiguration() {
+        console.log('⚙️ Loading system configuration...');
+        
+        const config = await this.configManager.loadConfig();
+        
+        // Configure components with loaded settings
+        await this.applyConfiguration(config);
+        
+        console.log('✅ Configuration loaded and applied');
+    }
+
+    async applyConfiguration(config) {
+        // Apply config to each component
+        const components = [
+            this.core, this.aiEngine, this.riskManager,
+            this.platforms, this.notifications, this.voice
+        ];
+
+        for (const component of components) {
+            if (typeof component.updateConfig === 'function') {
+                await component.updateConfig(config);
+            }
+        }
+    }
+
+    async start() {
+        if (this.isRunning) {
+            console.log('⚠️ System is already running');
+            return;
+        }
+
+        console.log('▶️ Starting BAYNEX.A.X Autonomous Trading System...');
+        
+        try {
+            this.startTime = Date.now();
+            
+            // Start the integration layer (which starts all components)
+            await this.integration.start();
+            
+            // Start system monitoring
+            this.startSystemMonitoring();
+            
+            this.isRunning = true;
+            
+            // Send startup notifications
+            await this.sendStartupNotifications();
+            
+            console.log('🎯 BAYNEX.A.X is now AUTONOMOUS and ACTIVE!');
+            console.log('💰 Ready to generate profits 24/7!');
+            
+        } catch (error) {
+            console.error('❌ Failed to start system:', error);
+            await this.handleSystemError(error);
+        }
+    }
+
+    async stop() {
+        if (!this.isRunning) {
+            console.log('⚠️ System is not running');
+            return;
+        }
+
+        console.log('⏹️ Stopping BAYNEX.A.X System...');
+        
+        try {
+            // Stop integration layer (which stops all components)
+            await this.integration.stop();
+            
+            this.isRunning = false;
+            this.startTime = null;
+            
+            // Send shutdown notifications
+            await this.sendShutdownNotifications();
+            
+            console.log('✅ BAYNEX.A.X System stopped successfully');
+            
+        } catch (error) {
+            console.error('❌ Error stopping system:', error);
+        }
+    }
+
+    async restart() {
+        console.log('🔄 Restarting BAYNEX.A.X System...');
+        await this.stop();
+        await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second pause
+        await this.start();
+    }
+
+    // ================================
+    // EVENT HANDLERS
+    // ================================
+    async onSystemReady() {
+        console.log('✅ BAYNEX.A.X Integration Layer Ready!');
+        
+        // Announce system readiness
+        if (this.voice && this.voice.isInitialized) {
+            await this.voice.speak('Baynex AI system is ready for autonomous trading');
+        }
+    }
+
+    async onSystemError(error) {
+        console.error('🚨 System Error:', error);
+        
+        // Send critical alert
+        if (this.notifications) {
+            await this.notifications.sendCriticalAlert({
+                type: 'system_error',
+                message: error.message,
+                timestamp: new Date()
+            });
+        }
+        
+        // Voice alert
+        if (this.voice) {
+            await this.voice.speak('Critical system error detected. Check notifications for details.');
+        }
+    }
+
+    async onSystemStarted() {
+        console.log('🚀 All components started successfully!');
+        
+        // Update system stats
+        this.updateSystemStats();
+        
+        // Start autonomous trading
+        await this.startAutonomousTrading();
+    }
+
+    async onSystemStopped() {
+        console.log('⏹️ All components stopped successfully!');
+    }
+
+    async onTradeExecuted(event) {
+        const trade = event.data[0];
+        console.log(`💰 Trade executed: ${trade.direction} ${trade.asset} - $${trade.amount}`);
+        
+        // Update system statistics
+        this.systemStats.totalTrades++;
+        this.updateSystemStats();
+        
+        // Announce significant trades
+        if (this.voice && trade.amount > 100) {
+            await this.voice.speak(`Large trade executed: ${trade.amount} dollars on ${trade.asset}`);
+        }
+    }
+
+    async onTradeClosed(event) {
+        const trade = event.data[0];
+        console.log(`📊 Trade closed: ${trade.result} - P&L: $${trade.profit}`);
+        
+        // Update system statistics
+        this.systemStats.totalProfit += trade.profit;
+        this.systemStats.dailyProfit += trade.profit;
+        this.systemStats.currentBalance += trade.profit;
+        this.updateSystemStats();
+        
+        // Calculate win rate
+        const completedTrades = await this.database.getCompletedTradesCount();
+        const winningTrades = await this.database.getWinningTradesCount();
+        this.systemStats.winRate = completedTrades > 0 ? (winningTrades / completedTrades * 100) : 0;
+        
+        // Announce significant results
+        if (this.voice && Math.abs(trade.profit) > 50) {
+            const message = trade.profit > 0 
+                ? `Excellent! Won ${trade.profit.toFixed(2)} dollars`
+                : `Loss taken: ${Math.abs(trade.profit).toFixed(2)} dollars`;
+            await this.voice.speak(message);
+        }
+    }
+
+    async onTargetReached(event) {
+        const achievement = event.data[0];
+        console.log(`🎯 Target reached: ${achievement.description}`);
+        
+        // Celebrate achievement
+        if (this.voice) {
+            await this.voice.speak(`Congratulations! ${achievement.description} achieved!`);
+        }
+        
+        // Send celebration notification
+        if (this.notifications) {
+            await this.notifications.sendAchievementAlert(achievement);
+        }
+    }
+
+    async onEmergencyStop(event) {
+        const stopEvent = event.data[0];
+        console.log('🛑 EMERGENCY STOP ACTIVATED:', stopEvent.reason);
+        
+        // Force stop all trading
+        this.isRunning = false;
+        
+        // Critical voice announcement
+        if (this.voice) {
+            await this.voice.speak('Emergency stop activated. All trading has been halted immediately.');
+        }
+        
+        // Send critical alerts
+        if (this.notifications) {
+            await this.notifications.sendCriticalAlert({
+                type: 'emergency_stop',
+                reason: stopEvent.reason,
+                timestamp: new Date()
+            });
+        }
+    }
+
+    // ================================
+    // AUTONOMOUS TRADING
+    // ================================
+    async startAutonomousTrading() {
+        console.log('🤖 Starting Autonomous Trading Mode...');
+        
+        // Enable AI learning
+        if (this.aiEngine) {
+            await this.aiEngine.enableLearning();
+        }
+        
+        // Start strategy execution
+        if (this.strategyManager) {
+            await this.strategyManager.startExecution();
+        }
+        
+        // Begin market monitoring
+        if (this.dataProcessor) {
+            await this.dataProcessor.startMonitoring();
+        }
+        
+        // Voice announcement
+        if (this.voice) {
+            await this.voice.speak('Autonomous trading mode activated. Baynexa is now hunting for profits.');
+        }
+        
+        console.log('✅ Autonomous trading is now ACTIVE!');
+    }
+
+    // ================================
+    // SYSTEM MONITORING
+    // ================================
+    startSystemMonitoring() {
+        console.log('📊 Starting system monitoring...');
+        
+        // Update system stats every 10 seconds
+        setInterval(() => {
+            this.updateSystemStats();
+        }, 10000);
+        
+        // Performance report every 5 minutes
+        setInterval(async () => {
+            await this.generatePerformanceReport();
+        }, 300000);
+        
+        // Daily summary at midnight
+        setInterval(async () => {
+            const now = new Date();
+            if (now.getHours() === 0 && now.getMinutes() === 0) {
+                await this.generateDailySummary();
+            }
+        }, 60000); // Check every minute for midnight
+    }
+
+    updateSystemStats() {
+        if (this.startTime) {
+            this.systemStats.systemUptime = Date.now() - this.startTime;
+        }
+        
+        this.systemStats.lastUpdate = new Date();
+        this.systemStats.activeStrategies = this.strategyManager ? 
+            this.strategyManager.getActiveStrategiesCount() : 0;
+        
+        // Broadcast updated stats to dashboard
+        if (this.webSocket) {
+            this.webSocket.broadcast('system_stats', this.systemStats);
+        }
+    }
+
+    async generatePerformanceReport() {
+        if (!this.isRunning) return;
+        
+        const report = {
+            timestamp: new Date(),
+            uptime: this.systemStats.systemUptime,
+            totalTrades: this.systemStats.totalTrades,
+            totalProfit: this.systemStats.totalProfit,
+            dailyProfit: this.systemStats.dailyProfit,
+            winRate: this.systemStats.winRate,
+            activeStrategies: this.systemStats.activeStrategies,
+            systemHealth: this.integration.getSystemHealth()
+        };
+        
+        console.log('📊 Performance Report:', report);
+        
+        // Send to dashboard
+        if (this.webSocket) {
+            this.webSocket.broadcast('performance_report', report);
+        }
+        
+        // Voice summary for significant performance
+        if (this.voice && this.systemStats.dailyProfit > 100) {
+            await this.voice.speak(`Daily profit update: ${this.systemStats.dailyProfit.toFixed(2)} dollars earned today`);
+        }
+    }
+
+    async generateDailySummary() {
+        console.log('📅 Generating daily summary...');
+        
+        const summary = {
+            date: new Date().toDateString(),
+            dailyProfit: this.systemStats.dailyProfit,
+            tradesExecuted: await this.database.getDailyTradeCount(),
+            winRate: this.systemStats.winRate,
+            bestStrategy: await this.strategyManager.getBestPerformingStrategy(),
+            systemUptime: this.systemStats.systemUptime / (1000 * 60 * 60), // Convert to hours
+        };
+        
+        // Reset daily stats
+        this.systemStats.dailyProfit = 0;
+        
+        // Send daily summary
+        if (this.notifications) {
+            await this.notifications.sendDailySummary(summary);
+        }
+        
+        // Voice summary
+        if (this.voice) {
+            const message = summary.dailyProfit > 0 
+                ? `Daily summary: Profitable day with ${summary.dailyProfit.toFixed(2)} dollars earned`
+                : `Daily summary: Loss day with ${Math.abs(summary.dailyProfit).toFixed(2)} dollars lost`;
+            await this.voice.speak(message);
+        }
+    }
+
+    // ================================
+    // NOTIFICATIONS
+    // ================================
+    async sendStartupNotifications() {
+        const message = `🚀 BAYNEX.A.X SYSTEM ACTIVATED
+
+🤖 Autonomous Trading: ENABLED
+💰 Starting Balance: $${this.systemStats.currentBalance}
+🎯 Daily Target: $${process.env.DAILY_PROFIT_TARGET || 200}
+🛡️ Max Daily Loss: $${process.env.MAX_DAILY_LOSS || 500}
+🧠 AI Learning: ACTIVE
+
+Ready to generate profits autonomously!`;
+
+        if (this.notifications) {
+            await this.notifications.sendSystemAlert({
+                type: 'startup',
+                message: message
+            });
+        }
+
+        if (this.voice) {
+            await this.voice.speak('Baynex AI trading system is now online and ready to make money!');
+        }
+    }
+
+    async sendShutdownNotifications() {
+        const uptime = this.startTime ? (Date.now() - this.startTime) / 1000 / 60 / 60 : 0;
+        
+        const message = `⏹️ BAYNEX.A.X SYSTEM SHUTDOWN
+
+📊 Session Summary:
+⏱️ Uptime: ${uptime.toFixed(1)} hours
+💰 Session P&L: $${this.systemStats.dailyProfit.toFixed(2)}
+📈 Trades: ${this.systemStats.totalTrades}
+🎯 Win Rate: ${this.systemStats.winRate.toFixed(1)}%
+
+System stopped safely.`;
+
+        if (this.notifications) {
+            await this.notifications.sendSystemAlert({
+                type: 'shutdown',
+                message: message
+            });
+        }
+
+        if (this.voice) {
+            await this.voice.speak('Baynex AI system has been safely shut down. Goodbye!');
+        }
+    }
+
+    // ================================
+    // API METHODS
+    // ================================
+    getSystemStatus() {
+        return {
+            ...this.systemStats,
+            isRunning: this.isRunning,
+            uptime: this.startTime ? Date.now() - this.startTime : 0,
+            health: this.integration.getSystemHealth(),
+            version: this.version
+        };
+    }
+
+    getSystemStats() {
+        return this.systemStats;
+    }
+
+    async handleSystemError(error) {
+        console.error('💥 SYSTEM ERROR:', error);
+        
+        this.systemStats.errors = this.systemStats.errors || [];
+        this.systemStats.errors.push({
+            timestamp: new Date(),
+            message: error.message,
+            stack: error.stack
+        });
+        
+        // Emergency shutdown if critical
+        if (error.critical) {
+            await this.emergencyShutdown();
+        }
+    }
+
+    async emergencyShutdown() {
+        console.log('🚨 EMERGENCY SHUTDOWN INITIATED');
+        
+        try {
+            // Stop all trading immediately
+            if (this.core) {
+                await this.core.emergencyStop();
+            }
+            
+            // Force stop system
+            await this.stop();
+            
+        } catch (shutdownError) {
+            console.error('❌ Emergency shutdown failed:', shutdownError);
+        }
+    }
+}
+
+module.exports = BayneXSystem;￼Enter
