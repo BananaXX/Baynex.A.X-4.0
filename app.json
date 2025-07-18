@@ -1,93 +1,296 @@
 {
   "name": "BAYNEX.A.X",
-  "description": "Binary Autonomous Yield Navigation & Execution X-System - AI-Powered Autonomous Trading System",
-  "repository": "https://github.com/yourusername/baynex-ax",
-  "logo": "https://raw.githubusercontent.com/yourusername/baynex-ax/main/assets/logo.png",
+  "description": "Binary Autonomous Yield Navigation & Execution X-System - A fully autonomous, self-learning, AI-powered multi-platform trading system.",
   "keywords": [
     "trading",
     "ai",
     "autonomous",
     "fintech",
-    "automation",
-    "forex",
-    "binary-options",
-    "machine-learning"
+    "machine-learning",
+    "algorithmic-trading"
   ],
+  "website": "https://baynex-ax.com",
+  "repository": "https://github.com/baynex-ax/baynex-ax",
+  "logo": "https://baynex-ax.com/logo.png",
   "success_url": "/dashboard",
+  "scripts": {
+    "postdeploy": "npm run setup"
+  },
   "env": {
     "NODE_ENV": {
       "description": "Node environment",
-      "value": "production"
-    },
-    "DERIV_APP_ID": {
-      "description": "Deriv API Application ID",
+      "value": "production",
       "required": true
     },
-    "DERIV_API_TOKEN": {
-      "description": "Deriv API Token for trading",
-      "required": true
-    },
-    "TELEGRAM_BOT_TOKEN": {
-      "description": "Telegram Bot Token for notifications",
-      "required": true
-    },
-    "TELEGRAM_CHAT_ID": {
-      "description": "Telegram Chat ID for receiving notifications",
-      "required": true
-    },
-    "FIREBASE_PROJECT_ID": {
-      "description": "Firebase Project ID for authentication",
-      "required": true
-    },
-    "FIREBASE_API_KEY": {
-      "description": "Firebase API Key",
-      "required": true
+    "LOG_LEVEL": {
+      "description": "Logging level",
+      "value": "info",
+      "required": false
     },
     "JWT_SECRET": {
-      "description": "JWT Secret for authentication",
-      "generator": "secret"
+      "description": "JWT secret key for authentication",
+      "generator": "secret",
+      "required": true
     },
-    "ENCRYPTION_KEY": {
-      "description": "Encryption key for sensitive data",
-      "generator": "secret"
+    "TRADING_ENABLED": {
+      "description": "Enable trading functionality",
+      "value": "false",
+      "required": false
     },
-    "PAPER_TRADING_MODE": {
-      "description": "Enable paper trading mode for testing",
-      "value": "true"
-    },
-    "DEFAULT_RISK_PER_TRADE": {
-      "description": "Default risk percentage per trade",
-      "value": "0.02"
+    "TRADING_MODE": {
+      "description": "Trading mode (demo or live)",
+      "value": "demo",
+      "required": false
     },
     "MAX_DAILY_LOSS": {
-      "description": "Maximum daily loss limit in USD",
-      "value": "500"
+      "description": "Maximum daily loss in USD",
+      "value": "25.00",
+      "required": false
     },
-    "DAILY_PROFIT_TARGET": {
-      "description": "Daily profit target in USD",
-      "value": "200"
+    "DERIV_ENABLED": {
+      "description": "Enable Deriv platform",
+      "value": "false",
+      "required": false
+    },
+    "DERIV_API_TOKEN": {
+      "description": "Deriv API token",
+      "required": false
+    },
+    "DERIV_APP_ID": {
+      "description": "Deriv application ID",
+      "required": false
+    },
+    "DERIV_DEMO": {
+      "description": "Use Deriv demo account",
+      "value": "true",
+      "required": false
+    },
+    "MT5_ENABLED": {
+      "description": "Enable MetaTrader 5 platform",
+      "value": "false",
+      "required": false
+    },
+    "MT5_SERVER": {
+      "description": "MT5 server address",
+      "required": false
+    },
+    "MT5_LOGIN": {
+      "description": "MT5 login",
+      "required": false
+    },
+    "MT5_PASSWORD": {
+      "description": "MT5 password",
+      "required": false
+    },
+    "MT5_DEMO": {
+      "description": "Use MT5 demo account",
+      "value": "true",
+      "required": false
+    },
+    "IQ_ENABLED": {
+      "description": "Enable IQ Option platform",
+      "value": "false",
+      "required": false
+    },
+    "IQ_EMAIL": {
+      "description": "IQ Option email",
+      "required": false
+    },
+    "IQ_PASSWORD": {
+      "description": "IQ Option password",
+      "required": false
+    },
+    "IQ_DEMO": {
+      "description": "Use IQ Option demo account",
+      "value": "true",
+      "required": false
+    },
+    "FIREBASE_ENABLED": {
+      "description": "Enable Firebase authentication",
+      "value": "true",
+      "required": false
+    },
+    "FIREBASE_API_KEY": {
+      "description": "Firebase API key",
+      "required": false
+    },
+    "FIREBASE_AUTH_DOMAIN": {
+      "description": "Firebase auth domain",
+      "required": false
+    },
+    "FIREBASE_PROJECT_ID": {
+      "description": "Firebase project ID",
+      "required": false
+    },
+    "FIREBASE_STORAGE_BUCKET": {
+      "description": "Firebase storage bucket",
+      "required": false
+    },
+    "FIREBASE_MESSAGING_SENDER_ID": {
+      "description": "Firebase messaging sender ID",
+      "required": false
+    },
+    "FIREBASE_APP_ID": {
+      "description": "Firebase app ID",
+      "required": false
+    },
+    "TELEGRAM_ENABLED": {
+      "description": "Enable Telegram notifications",
+      "value": "false",
+      "required": false
+    },
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram bot token",
+      "required": false
+    },
+    "TELEGRAM_CHAT_ID": {
+      "description": "Telegram chat ID",
+      "required": false
+    },
+    "WHATSAPP_ENABLED": {
+      "description": "Enable WhatsApp notifications",
+      "value": "false",
+      "required": false
+    },
+    "WHATSAPP_API_KEY": {
+      "description": "WhatsApp API key",
+      "required": false
+    },
+    "WHATSAPP_PHONE": {
+      "description": "WhatsApp phone number",
+      "required": false
     },
     "VOICE_ENABLED": {
-      "description": "Enable voice assistant features",
-      "value": "true"
+      "description": "Enable voice assistant",
+      "value": "true",
+      "required": false
+    },
+    "VOICE_MODE": {
+      "description": "Voice assistant mode (smart, full, silent)",
+      "value": "smart",
+      "required": false
+    },
+    "VOICE_PERSONALITY": {
+      "description": "Voice assistant personality (professional, friendly, analytical)",
+      "value": "professional",
+      "required": false
     },
     "AI_LEARNING_ENABLED": {
-      "description": "Enable AI learning and adaptation",
-      "value": "true"
+      "description": "Enable AI learning",
+      "value": "true",
+      "required": false
+    },
+    "BACKUP_ENABLED": {
+      "description": "Enable automatic backups",
+      "value": "true",
+      "required": false
+    },
+    "COMPRESSION_ENABLED": {
+      "description": "Enable response compression",
+      "value": "true",
+      "required": false
+    },
+    "RATE_LIMIT": {
+      "description": "API rate limit (requests per minute)",
+      "value": "100",
+      "required": false
+    },
+    "SESSION_TIMEOUT": {
+      "description": "Session timeout in milliseconds",
+      "value": "3600000",
+      "required": false
+    },
+    "MAX_MEMORY": {
+      "description": "Maximum memory usage in MB",
+      "value": "512",
+      "required": false
+    },
+    "CLUSTER_WORKERS": {
+      "description": "Number of cluster workers (0 = auto)",
+      "value": "0",
+      "required": false
     }
   },
   "formation": {
     "web": {
       "quantity": 1,
-      "size": "free"
+      "size": "starter"
     }
   },
   "image": "heroku/nodejs",
-  "addons": [],
+  "stack": "heroku-22",
   "buildpacks": [
     {
       "url": "heroku/nodejs"
     }
   ],
-  "stack": "heroku-22"
+  "addons": [
+    {
+      "plan": "heroku-redis:mini",
+      "as": "REDIS"
+    }
+  ],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test": "npm test"
+      },
+      "env": {
+        "NODE_ENV": "test",
+        "TRADING_ENABLED": "false",
+        "LOG_LEVEL": "error"
+      }
+    },
+    "staging": {
+      "env": {
+        "NODE_ENV": "staging",
+        "TRADING_ENABLED": "false",
+        "LOG_LEVEL": "debug"
+      }
+    },
+    "production": {
+      "env": {
+        "NODE_ENV": "production",
+        "LOG_LEVEL": "info"
+      }
+    }
+  },
+  "features": [
+    "metrics-beta",
+    "log-runtime-metrics"
+  ],
+  "healthchecks": [
+    {
+      "type": "http",
+      "name": "health",
+      "url": "/health",
+      "timeout": 30,
+      "interval": 60
+    }
+  ],
+  "deployment": {
+    "method": "github",
+    "auto_deploy": {
+      "enabled": true,
+      "branch": "main"
+    },
+    "review_apps": {
+      "enabled": true,
+      "branch": "develop"
+    }
+  },
+  "review_apps": {
+    "enabled": true,
+    "automatic_deploys": true,
+    "wait_for_ci": true,
+    "destroy_stale_apps": {
+      "enabled": true,
+      "days": 7
+    }
+  },
+  "region": "us",
+  "maintenance": false,
+  "docker": {
+    "web": "Dockerfile"
+  }
 }
