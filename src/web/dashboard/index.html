@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAYNEX.A.X - Binary Autonomous Yield Navigation & Execution X-System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="baynex-logo">
+                <i class="fas fa-robot"></i>
+                <h1>BAYNEX.A.X</h1>
+            </div>
+            <div class="loading-spinner"></div>
+            <p>Initializing Binary Autonomous Trading System...</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="login-header">
+                <h2><i class="fas fa-robot"></i> BAYNEX.A.X Login</h2>
+                <p>Access your autonomous trading dashboard</p>
+            </div>
+            <div class="login-form">
+                <input type="email" id="email" placeholder="Email address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button id="login-btn" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <div class="login-error" id="login-error"></div>
+            </div>
+            <div class="login-footer">
+                <p>Secure access powered by Firebase Authentication</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>BAYNEX.A.X</span>
+                </div>
+                <div class="system-status" id="system-status">
+                    <div class="status-indicator active"></div>
+                    <span>SYSTEM ACTIVE</span>
+                </div>
+            </div>
+            
+            <div class="header-center">
+                <div class="voice-controls">
+                    <button id="voice-toggle" class="voice-btn active" title="Voice Assistant">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <select id="voice-mode" class="voice-select">
+                        <option value="smart">Smart Mode</option>
+                        <option value="full">Full Mode</option>
+                        <option value="silent">Silent Mode</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="user-name">Loading...</span>
+                    <span id="user-role" class="user-role">TRADER</span>
+                </div>
+                <button id="logout-btn" class="btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#overview" class="nav-item active" data-section="overview">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#trading" class="nav-item" data-section="trading">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Trading</span>
+                    </a>
+                    <a href="#strategies" class="nav-item" data-section="strategies">
+                        <i class="fas fa-brain"></i>
+                        <span>Strategies</span>
+                    </a>
+                    <a href="#platforms" class="nav-item" data-section="platforms">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Platforms</span>
+                    </a>
+                    <a href="#performance" class="nav-item" data-section="performance">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Performance</span>
+                    </a>
+                    <a href="#goals" class="nav-item" data-section="goals">
+                        <i class="fas fa-target"></i>
+                        <span>Goals</span>
+                    </a>
+                    <a href="#risk" class="nav-item" data-section="risk">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Risk</span>
+                    </a>
+                    <a href="#logs" class="nav-item" data-section="logs">
+                        <i class="fas fa-list"></i>
+                        <span>Logs</span>
+                    </a>
+                    <a href="#settings" class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content">
+                <!-- Overview Section -->
+                <div id="section-overview" class="content-section active">
+                    <div class="section-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> System Overview</h2>
+                        <div class="section-actions">
+                            <button id="emergency-stop" class="btn-danger">
+                                <i class="fas fa-stop"></i> Emergency Stop
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card balance-card">
+                            <div class="metric-header">
+                                <h3>Total Balance</h3>
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="metric-value" id="total-balance">$0.00</div>
+                            <div class="metric-change" id="balance-change">+$0.00 (0%)</div>
+                        </div>
+
+                        <div class="metric-card profit-card">
+                            <div class="metric-header">
+                                <h3>Today's P&L</h3>
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="metric-value" id="daily-pnl">$0.00</div>
+                            <div class="metric-change" id="pnl-change">0 trades</div>
+                        </div>
+
+                        <div class="metric-card winrate-card">
+                            <div class="metric-header">
+                                <h3>Win Rate</h3>
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="metric-value" id="win-rate">0%</div>
+                            <div class="metric-change" id="winrate-trades">0/0 trades</div>
+                        </div>
+
+                        <div class="metric-card active-card">
+                            <div class="metric-header">
+                                <h3>Active Strategies</h3>
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="metric-value" id="active-strategies">0</div>
+                            <div class="metric-change" id="strategy-status">Learning...</div>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <h3>Balance History</h3>
+                            <canvas id="balance-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>P&L Distribution</h3>
+                            <canvas id="pnl-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="action-btn" id="start-trading">
+                                <i class="fas fa-play"></i> Start Trading
+                            </button>
+                            <button class="action-btn" id="pause-trading">
+                                <i class="fas fa-pause"></i> Pause Trading
+                            </button>
+                            <button class="action-btn" id="force-learning">
+                                <i class="fas fa-graduation-cap"></i> Force Learning
+                            </button>
+                            <button class="action-btn" id="reset-session">
+                                <i class="fas fa-refresh"></i> Reset Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Section -->
+                <div id="section-trading" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-chart-line"></i> Live Trading</h2>
+                    </div>
+
+                    <div class="trading-grid">
+                        <!-- Platform Status -->
+                        <div class="platform-status-grid">
+                            <div class="platform-card" id="deriv-status">
+                                <div class="platform-header">
+                                    <h3>Deriv</h3>
+                                    <div class="status-indicator"></div>
+                                </div>
+                                <div class="platform-metrics">
+                                    <div class="metric">
+                                        <span>Balance:</span>
+                                        <span id="deriv-balance">$0.00</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Trades:</span>
+                                        <span id="deriv-trades">0</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>P&L:</span>
+                                        <span id="deriv-pnl">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="platform-card" id="mt5-status">
+                                <div class="platform-header">
+                                    <h3>MetaTrader 5</h3>
+                                    <div class="status-indicator"></div>
+                                </div>
+                                <div class="platform-metrics">
+                                    <div class="metric">
+                                        <span>Balance:</span>
+                                        <span id="mt5-balance">$0.00</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Trades:</span>
+                                        <span id="mt5-trades">0</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>P&L:</span>
+                                        <span id="mt5-pnl">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="platform-card" id="iq-status">
+                                <div class="platform-header">
+                                    <h3>IQ Option</h3>
+                                    <div class="status-indicator"></div>
+                                </div>
+                                <div class="platform-metrics">
+                                    <div class="metric">
+                                        <span>Balance:</span>
+                                        <span id="iq-balance">$0.00</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Trades:</span>
+                                        <span id="iq-trades">0</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>P&L:</span>
+                                        <span id="iq-pnl">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Live Trades Table -->
+                        <div class="trades-container">
+                            <h3>Recent Trades</h3>
+                            <div class="table-container">
+                                <table id="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Platform</th>
+                                            <th>Symbol</th>
+                                            <th>Direction</th>
+                                            <th>Amount</th>
+                                            <th>Result</th>
+                                            <th>P&L</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trades-tbody">
+                                        <!-- Trades will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections will be added similarly -->
+                <!-- Placeholder for other sections -->
+                <div id="section-strategies" class="content-section">
+                    <h2>Strategy Management</h2>
+                    <p>Strategy management interface coming up...</p>
+                </div>
+
+                <div id="section-platforms" class="content-section">
+                    <h2>Platform Management</h2>
+                    <p>Platform configuration interface coming up...</p>
+                </div>
+
+                <div id="section-performance" class="content-section">
+                    <h2>Performance Analytics</h2>
+                    <p>Performance analytics interface coming up...</p>
+                </div>
+
+                <div id="section-goals" class="content-section">
+                    <h2>Goal Tracking</h2>
+                    <p>Goal tracking interface coming up...</p>
+                </div>
+
+                <div id="section-risk" class="content-section">
+                    <h2>Risk Management</h2>
+                    <p>Risk management interface coming up...</p>
+                </div>
+
+                <div id="section-logs" class="content-section">
+                    <h2>System Logs</h2>
+                    <p>System logs interface coming up...</p>
+                </div>
+
+                <div id="section-settings" class="content-section">
+                    <h2>System Settings</h2>
+                    <p>Settings interface coming up...</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Voice Assistant Panel -->
+        <div id="voice-panel" class="voice-panel">
+            <div class="voice-header">
+                <h3><i class="fas fa-microphone"></i> Baynexa Assistant</h3>
+                <button id="close-voice" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="voice-messages" id="voice-messages">
+                <!-- Voice messages will appear here -->
+            </div>
+            <div class="voice-input">
+                <input type="text" id="voice-text-input" placeholder="Type a message to Baynexa...">
+                <button id="send-voice-message" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="notification-toast" class="notification-toast">
+            <div class="toast-content">
+                <div class="toast-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="toast-message">
+                    <div class="toast-title">Notification</div>
+                    <div class="toast-text">Message content</div>
+                </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
