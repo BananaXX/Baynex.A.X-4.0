@@ -1,7 +1,12 @@
+#!/usr/bin/env node
+
 // server.js - Main Entry Point for BAYNEX.A.X
-const BayneXSystem = require('./BayneXSystem');
+// Binary Autonomous Yield Navigation & Execution X-System
+
+require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const BayneXSystem = require('./BayneXSystem');
 
 // ASCII Art Banner
 const banner = `
@@ -38,12 +43,23 @@ const getEnvironmentConfig = () => {
                     logLevel: 'debug'
                 },
                 web: {
-                    port: process.env.PORT || 3000,
-                    wsPort: process.env.WS_PORT || 8080
+                    port: parseInt(process.env.PORT) || 3000,
+                    wsPort: parseInt(process.env.WS_PORT) || 8080,
+                    host: process.env.HOST || '0.0.0.0'
                 },
                 trading: {
-                    enabled: false,
-                    mode: 'demo'
+                    enabled: process.env.TRADING_ENABLED === 'true',
+                    mode: process.env.TRADING_MODE || 'demo',
+                    autoStart: process.env.AUTO_START_TRADING === 'true'
+                },
+                platforms: {
+                    deriv: {
+                        enabled: process.env.DERIV_ENABLED !== 'false',
+                        apiToken: process.env.DERIV_API_TOKEN,
+                        appId: process.env.DERIV_APP_ID || '1089',
+                        endpoint: process.env.DERIV_ENDPOINT || 'wss://ws.derivws.com/websockets/v3',
+                        demo: process.env.DERIV_DEMO !== 'false'
+                    }
                 }
             }
         },
@@ -56,19 +72,22 @@ const getEnvironmentConfig = () => {
                     logLevel: process.env.LOG_LEVEL || 'info'
                 },
                 web: {
-                    port: process.env.PORT || 3000,
-                    wsPort: process.env.WS_PORT || 8080,
+                    port: parseInt(process.env.PORT) || 3000,
+                    wsPort: parseInt(process.env.WS_PORT) || 8080,
+                    host: process.env.HOST || '0.0.0.0',
                     jwtSecret: process.env.JWT_SECRET || 'baynex-production-secret'
                 },
                 trading: {
                     enabled: process.env.TRADING_ENABLED === 'true',
-                    mode: process.env.TRADING_MODE || 'demo'
+                    mode: process.env.TRADING_MODE || 'demo',
+                    autoStart: process.env.AUTO_START_TRADING === 'true'
                 },
                 platforms: {
                     deriv: {
                         enabled: process.env.DERIV_ENABLED === 'true',
                         apiToken: process.env.DERIV_API_TOKEN,
-                        appId: process.env.DERIV_APP_ID,
+                        appId: process.env.DERIV_APP_ID || '1089',
+                        endpoint: process.env.DERIV_ENDPOINT || 'wss://ws.derivws.com/websockets/v3',
                         demo: process.env.DERIV_DEMO !== 'false'
                     },
                     mt5: {
@@ -118,7 +137,8 @@ const getEnvironmentConfig = () => {
                 },
                 web: {
                     port: 3001,
-                    wsPort: 8081
+                    wsPort: 8081,
+                    host: '127.0.0.1'
                 },
                 trading: {
                     enabled: false,
@@ -174,7 +194,9 @@ const createHealthCheckServer = (port) => {
                 version: '1.0.0',
                 timestamp: new Date().toISOString(),
                 uptime: process.uptime(),
-                environment: process.env.NODE_ENV || 'development'
+                environment: process.env.NODE_ENV || 'development',
+                memory: process.memoryUsage(),
+                pid: process.pid
             }));
         } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -206,12 +228,14 @@ async function startBayneXSystem() {
         console.log(`   Log Level: ${config.config.system.logLevel}`);
         console.log(`   Web Port: ${config.config.web.port}`);
         console.log(`   WebSocket Port: ${config.config.web.wsPort}`);
+        console.log(`   Host: ${config.config.web.host}`);
         console.log(`   Trading Enabled: ${config.config.trading.enabled}`);
-        console.log(`   Trading Mode: ${config.config.trading.mode}\n`);
+        console.log(`   Trading Mode: ${config.config.trading.mode}`);
+        console.log(`   Auto Start Trading: ${config.config.trading.autoStart}\n`);
         
         // Create health check server (useful for deployment platforms)
         if (process.env.HEALTH_CHECK_PORT) {
-            createHealthCheckServer(process.env.HEALTH_CHECK_PORT);
+            createHealthCheckServer(parseInt(process.env.HEALTH_CHECK_PORT));
         }
         
         // Initialize BAYNEX.A.X system
@@ -239,10 +263,24 @@ async function startBayneXSystem() {
         
         // Log access URLs
         const webPort = config.config.web.port;
+        const host = config.config.web.host === '0.0.0.0' ? 'localhost' : config.config.web.host;
         console.log('\n🌐 Access URLs:');
-        console.log(`   Dashboard: http://localhost:${webPort}/dashboard`);
-        console.log(`   Health Check: http://localhost:${webPort}/health`);
-        console.log(`   API: http://localhost:${webPort}/api`);
+        console.log(`   Dashboard: http://${host}:${webPort}/dashboard`);
+        console.log(`   Health Check: http://${host}:${webPort}/health`);
+        console.log(`   API: http://${host}:${webPort}/api`);
+        
+        // Show trading status
+        if (config.config.trading.enabled) {
+            console.log('\n💰 Trading Status:');
+            console.log(`   Mode: ${config.config.trading.mode.toUpperCase()}`);
+            console.log(`   Auto Start: ${config.config.trading.autoStart ? 'Yes' : 'No'}`);
+            
+            if (config.config.platforms.deriv.enabled) {
+                console.log(`   Deriv: ${config.config.platforms.deriv.demo ? 'Demo' : 'Live'} Account`);
+            }
+        } else {
+            console.log('\n⏸️  Trading is currently disabled');
+        }
         
         // Set up graceful shutdown
         const gracefulShutdown = async (signal) => {
@@ -252,6 +290,7 @@ async function startBayneXSystem() {
         
         process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
         process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+        process.on('SIGHUP', () => gracefulShutdown('SIGHUP'));
         
         // Handle uncaught exceptions
         process.on('uncaughtException', (error) => {
@@ -262,6 +301,28 @@ async function startBayneXSystem() {
         process.on('unhandledRejection', (reason, promise) => {
             console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
         });
+        
+        // Performance monitoring
+        if (process.env.NODE_ENV === 'production') {
+            setInterval(() => {
+                const memUsage = process.memoryUsage();
+                const cpuUsage = process.cpuUsage();
+                
+                if (memUsage.heapUsed > 512 * 1024 * 1024) { // 512MB
+                    console.warn('⚠️  High memory usage detected:', Math.round(memUsage.heapUsed / 1024 / 1024) + 'MB');
+                }
+            }, 60000); // Check every minute
+        }
+        
+        // Auto-start trading if enabled
+        if (config.config.trading.enabled && config.config.trading.autoStart) {
+            console.log('\n🎯 Auto-starting trading system...');
+            setTimeout(() => {
+                bayneXSystem.startTrading().catch(error => {
+                    console.error('❌ Failed to auto-start trading:', error.message);
+                });
+            }, 5000); // Wait 5 seconds for system to fully initialize
+        }
         
         // Success message
         console.log('\n🎯 BAYNEX.A.X is now ready for autonomous trading operations!');
@@ -283,6 +344,8 @@ async function startBayneXSystem() {
         console.log('   3. Verify file permissions for data and logs directories');
         console.log('   4. Check Node.js version is 16 or higher');
         console.log('   5. Review the error message above for specific issues');
+        console.log('   6. Check if required API tokens are configured correctly');
+        console.log('   7. Ensure ports are not in use by other applications');
         
         process.exit(1);
     }
