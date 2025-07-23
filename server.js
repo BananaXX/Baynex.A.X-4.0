@@ -49,7 +49,7 @@ const getEnvironmentConfig = () => {
                 },
                 trading: {
                     enabled: process.env.TRADING_ENABLED === 'true',
-                    mode: process.env.TRADING_MODE || 'demo',
+                    mode: process.env.TRADING_MODE || 'live',
                     autoStart: process.env.AUTO_START_TRADING === 'true'
                 },
                 platforms: {
@@ -58,7 +58,7 @@ const getEnvironmentConfig = () => {
                         apiToken: process.env.DERIV_API_TOKEN,
                         appId: process.env.DERIV_APP_ID || '1089',
                         endpoint: process.env.DERIV_ENDPOINT || 'wss://ws.derivws.com/websockets/v3',
-                        demo: process.env.DERIV_DEMO !== 'false'
+                        demo: process.env.DERIV_DEMO === 'true'
                     }
                 }
             }
@@ -79,7 +79,7 @@ const getEnvironmentConfig = () => {
                 },
                 trading: {
                     enabled: process.env.TRADING_ENABLED === 'true',
-                    mode: process.env.TRADING_MODE || 'demo',
+                    mode: process.env.TRADING_MODE || 'live',
                     autoStart: process.env.AUTO_START_TRADING === 'true'
                 },
                 platforms: {
@@ -88,20 +88,20 @@ const getEnvironmentConfig = () => {
                         apiToken: process.env.DERIV_API_TOKEN,
                         appId: process.env.DERIV_APP_ID || '1089',
                         endpoint: process.env.DERIV_ENDPOINT || 'wss://ws.derivws.com/websockets/v3',
-                        demo: process.env.DERIV_DEMO !== 'false'
+                        demo: process.env.DERIV_DEMO === 'true'
                     },
                     mt5: {
                         enabled: process.env.MT5_ENABLED === 'true',
                         server: process.env.MT5_SERVER,
                         login: process.env.MT5_LOGIN,
                         password: process.env.MT5_PASSWORD,
-                        demo: process.env.MT5_DEMO !== 'false'
+                        demo: process.env.MT5_DEMO === 'true'
                     },
                     iq: {
                         enabled: process.env.IQ_ENABLED === 'true',
                         email: process.env.IQ_EMAIL,
                         password: process.env.IQ_PASSWORD,
-                        demo: process.env.IQ_DEMO !== 'false'
+                        demo: process.env.IQ_DEMO === 'true'
                     }
                 },
                 notifications: {
@@ -276,7 +276,10 @@ async function startBayneXSystem() {
             console.log(`   Auto Start: ${config.config.trading.autoStart ? 'Yes' : 'No'}`);
             
             if (config.config.platforms.deriv.enabled) {
-                console.log(`   Deriv: ${config.config.platforms.deriv.demo ? 'Demo' : 'Live'} Account`);
+                console.log(`   Deriv: ${config.config.platforms.deriv.demo ? 'Demo' : 'LIVE'} Account`);
+                if (!config.config.platforms.deriv.demo) {
+                    console.log('   🚨 LIVE TRADING ENABLED - REAL MONEY 🚨');
+                }
             }
         } else {
             console.log('\n⏸️  Trading is currently disabled');
